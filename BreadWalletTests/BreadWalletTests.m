@@ -769,8 +769,8 @@
     NSMutableData *hash = [NSMutableData dataWithLength:CC_SHA256_DIGEST_LENGTH], *script = [NSMutableData data];
     BRKey *k = [BRKey keyWithSecret:@"0000000000000000000000000000000000000000000000000000000000000001".hexToData
                 compressed:YES];
-    BRWallet *w = [[BRWallet alloc] initWithContext:nil sequence:[BRBIP32Sequence new]
-                   seed:^NSData *{ return [NSData data]; }];
+    BRWallet *w = [[BRWallet alloc] initWithContext:nil sequence:[BRBIP32Sequence new] masterPublicKey:nil
+                   seed:^NSData *(NSString *authprompt, uint64_t amount) { return [NSData data]; }];
 
     [script appendScriptPubKeyForAddress:k.address];
 
@@ -786,7 +786,7 @@
 
     XCTAssertNotNil(tx, @"[BRWallet transactionFor:to:withFee:]");
 
-    [w signTransaction:tx];
+    [w signTransaction:tx withPrompt:nil];
 
     XCTAssertTrue(tx.isSigned, @"[BRWallet signTransaction]");
 
@@ -795,7 +795,8 @@
     XCTAssertEqual(w.balance, SATOSHIS/2, @"[BRWallet balance]");
 
 #if ! BITCOIN_TESTNET
-    w = [[BRWallet alloc] initWithContext:nil sequence:[BRBIP32Sequence new] seed:^NSData *{ return [NSData data]; }];
+    w = [[BRWallet alloc] initWithContext:nil sequence:[BRBIP32Sequence new] masterPublicKey:nil
+         seed:^NSData *(NSString *authprompt, uint64_t amount) { return [NSData data]; }];
     
     NSMutableSet *allAddresses = (id)w.addresses;
 
@@ -948,19 +949,19 @@
 
 - (void)testScryptAuxPowHeader
 {
-    
+
     NSData *block = @"0200000021c5d624762446d36e81b788b191948396bddffa88dea49a79ec15d4bd1c4be5843fca1984630c7d1b0ea26569908cc03b35a0853c047d4087153b6e75747733be9bd65345a5621b804e6e9c0101000000010000000000000000000000000000000000000000000000000000000000000000ffffffff2603a2d404062f503253482f04bf9bd653080601d937010000000c2f436f696e4d696e6550572f000000000100a40731af0500001976a91402e119c481b2422cd748766669d73f867649eeaa88ac00000000".hexToData;
-    
+
     BRMerkleBlock *b = [BRMerkleBlock blockWithMessage:block];
-    
+
     XCTAssertEqualObjects(b.blockHash,
                           @"e6e6d9e221fc2525505586daba87c233921d6682d8e19e4a0a6fc5e5bceafa01".hexToData.reverse,
                           @"[BRMerkleBlock blockHash]");
-    
+
     XCTAssertEqualObjects(b.powHash,
                           @"00000000003e16b3cf2ff84e241d7c762178f574d0218ca8545b1b681f4006df".hexToData.reverse,
                           @"[BRMerkleBlock blockHash]");
-    
+
     XCTAssertEqualObjects(b.powHash,
                           @"00000000003e16b3cf2ff84e241d7c762178f574d0218ca8545b1b681f4006df".hexToData.reverse,
                           @"[BRMerkleBlock blockHash]");

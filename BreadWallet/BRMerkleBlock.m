@@ -101,6 +101,12 @@ static uint32_t getCompact(const BIGNUM *bn)
 // flag bits (little endian): 00001011 [merkleRoot = 1, m1 = 1, tx1 = 0, tx2 = 1, m2 = 0, byte padding = 000]
 // hashes: [tx1, tx2, m2]
 
+@interface BRMerkleBlock ()
+
+@property (nonatomic, strong) NSData *blockHash;
+    
+@end
+
 @implementation BRMerkleBlock
 
 // message can be either a merkleblock or header message
@@ -129,7 +135,6 @@ static uint32_t getCompact(const BIGNUM *bn)
 
     NSUInteger off = 0, l = 0, len = 0;
 
-    _blockHash = [message subdataWithRange:NSMakeRange(0, 80)].SHA256_2;
     _version = [message UInt32AtOffset:off];
     off += sizeof(uint32_t);
     _prevBlock = [message hashAtOffset:off];
@@ -153,11 +158,11 @@ static uint32_t getCompact(const BIGNUM *bn)
     off += sizeof(uint32_t);
     len = (NSUInteger)[message varIntAtOffset:off length:&l]*CC_SHA256_DIGEST_LENGTH;
     off += l;
-    _hashes = off + len > message.length ? nil : [message subdataWithRange:NSMakeRange(off, len)];
+    _hashes = (off + len > message.length) ? nil : [message subdataWithRange:NSMakeRange(off, len)];
     off += len;
     _flags = [message dataAtOffset:off length:&l];
     _height = BLOCK_UNKOWN_HEIGHT;
-
+    
     return self;
 }
 
@@ -182,6 +187,23 @@ parentBlock:(NSData*)parentBlock
     _parentBlock = [BRMerkleBlock blockWithMessage:parentBlock];
     
     return self;
+}
+
+- (NSData *)blockHash
+{
+    if (! _blockHash) {
+        NSMutableData *d = [NSMutableData data];
+        
+        [d appendUInt32:_version];
+        [d appendData:_prevBlock];
+        [d appendData:_merkleRoot];
+        [d appendUInt32:_timestamp + NSTimeIntervalSince1970];
+        [d appendUInt32:_target];
+        [d appendUInt32:_nonce];
+        _blockHash = d.SHA256_2;
+    }
+
+    return _blockHash;
 }
 
 - (BOOL)isMerkleRootValid

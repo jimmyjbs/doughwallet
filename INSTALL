@@ -1,7 +1,7 @@
 build and install doughwallet
 -----------------------------
 
-1. clone the doughwallet git repository: 
+1. clone the doughwallet git repository:
 
    `git clone https://github.com/peritus/doughwallet.git`
 

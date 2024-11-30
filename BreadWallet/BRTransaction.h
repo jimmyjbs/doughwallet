@@ -30,6 +30,7 @@
 #define TX_MAX_SIZE          100000      // no tx can be larger than this size in bytes
 #define TX_UNCONFIRMED       INT32_MAX   // block height indicating transaction is unconfirmed
 #define TX_MAX_LOCK_HEIGHT   500000000u  // a lockTime below this value is a block height, otherwise a timestamp
+#define TX_AVERAGE_SIZE      550         // average transaction size in bytes as of november 2014 (relatively stable)
 
 @interface BRTransaction : NSObject
 

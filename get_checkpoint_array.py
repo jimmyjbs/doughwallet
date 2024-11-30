@@ -89,7 +89,6 @@ INTERVAL = 2016
 print "static const struct { uint32_t height; char *hash; time_t timestamp; uint32_t target; } checkpoint_array[] = {"
 
 while True:
-    i += INTERVAL
     h = rpc('getblockhash', [i])['result']
     block = rpc('getblock', [h])['result']
 
@@ -98,4 +97,4 @@ while True:
     print '    { %d, "%s", %d, 0x%su },' % (
         i, block['hash'], block['time'], bin2hex(target_int2bits(int(block['difficulty'])))
     )
-
+    i += INTERVAL

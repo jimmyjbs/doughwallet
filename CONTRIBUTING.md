@@ -8,7 +8,7 @@ Doughwallet is a fork of Breadwallet (http://github.com/voisine/breadwallet), so
 
 ## Adding new features
 
-ll features that would improve the wallet in a bitcoin context should be contributed to Breadwallet first and will then merged to Doughwallet afterwards. 
+ll features that would improve the wallet in a bitcoin context should be contributed to Breadwallet first and will then merged to Doughwallet afterwards.
 
 Features that are specific to dogecoin or the spirit / community of dogecoin should be contributed here.
 
@@ -24,5 +24,4 @@ Doughwallet uses Apple’s TestFlight for beta testing. Use the beta tester appl
 
 ## Translations
 
-If you want to help translate Doughwallet to your language, please contribute a translation to Breadwallet first. We’ll merge that back to Doughwallet and then translate the strings that differ. This saves work and we get a consistent language across the two applications.  
-
+If you want to help translate Doughwallet to your language, please contribute a translation to Breadwallet first. We’ll merge that back to Doughwallet and then translate the strings that differ. This saves work and we get a consistent language across the two applications.
